@@ -14,6 +14,10 @@
       "use": "@vercel/static"
     },
     {
+      "src": "*.pdf",
+      "use": "@vercel/static"
+    },
+    {
       "src": "*.mp3",
       "use": "@vercel/static"
     }
