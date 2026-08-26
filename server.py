@@ -574,7 +574,7 @@ def chat_proxy():
             model=MODEL,
             messages=full_messages,
             temperature=0.6,
-            max_completion_tokens=MAX_TOKENS,
+            max_tokens=MAX_TOKENS,
             top_p=0.95,
             stream=True,
             stop=None
