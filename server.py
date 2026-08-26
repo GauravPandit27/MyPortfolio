@@ -30,14 +30,17 @@ app = Flask(__name__, static_folder=".")
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # ─────────────────────── CONFIG ───────────────────────────
-API_KEY         = os.environ.get("GROQ_API_KEY", "")
+API_KEY         = os.environ.get("GROQ_API_KEY") or os.environ.get("API_KEY") or "missing_key"
 MODEL           = "qwen/qwen3.6-27b"
 MAX_INPUT_LEN   = 500      # characters
 MAX_TOKENS      = 2048
 RATE_LIMIT_RPM  = 12       # max requests per minute per IP
 
-# Initialize Groq client
-client = Groq(api_key=API_KEY)
+# Initialize Groq client safely
+try:
+    client = Groq(api_key=API_KEY)
+except Exception:
+    client = None
 
 # ─────────────────────── RATE LIMITER ─────────────────────
 _rate_store: dict = defaultdict(list)
