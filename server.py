@@ -598,7 +598,7 @@ def chat_proxy():
     except Exception as e:
         # ── Fallback Demo Response ──
         print(f"API Error falling back: {e}")
-        fallback_msg = "Namaste! 🙏 The API connection is currently resting. But I am Gaurav Pandit's Digital Guru! Gaurav is an AI Engineer and Researcher building autonomous systems like FlowMind and Pandit LLM, guided by Vedic wisdom. Feel free to reach out to him directly via the contact form above!"
+        fallback_msg = f"Namaste! 🙏 The API connection is currently resting. (Debug: {str(e)}). But I am Gaurav Pandit's Digital Guru! Gaurav is an AI Engineer and Researcher building autonomous systems like FlowMind and Pandit LLM, guided by Vedic wisdom. Feel free to reach out to him directly via the contact form above!"
         if stream:
             def fallback_stream():
                 chunk = {
