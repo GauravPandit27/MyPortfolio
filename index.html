@@ -659,39 +659,77 @@
     }
     .skills-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1rem; width: 100%;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem; width: 100%;
+    }
+    .skill-card-container {
+      perspective: 1000px;
+      width: 100%;
+      height: 250px;
     }
     .skill-card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .skill-card-container:hover .skill-card {
+      transform: rotateY(180deg);
+    }
+    .skill-card-front, .skill-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
       background: rgba(26,22,80,0.5);
       border: 1px solid rgba(212,175,55,0.15);
-      border-radius: 6px; padding: 1.2rem;
-      text-align: center; cursor: pointer;
-      transition: all 0.3s;
-      position: relative; overflow: hidden;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
     }
-    .skill-card::before {
+    .skill-card-front {
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: all 0.3s;
+    }
+    .skill-card-front::before {
       content: ''; position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(212,175,55,0.05), transparent);
       opacity: 0; transition: opacity 0.3s;
+      border-radius: 8px;
     }
-    .skill-card:hover::before { opacity: 1; }
-    .skill-card:hover {
+    .skill-card-container:hover .skill-card-front::before { opacity: 1; }
+    
+    .skill-card-back {
+      transform: rotateY(180deg);
+      background: rgba(13,11,43,0.95);
       border-color: rgba(212,175,55,0.5);
-      transform: translateY(-5px) scale(1.02);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      text-align: left;
+      overflow-y: auto;
+      display: flex; flex-direction: column; justify-content: flex-start;
+      gap: 0.5rem;
     }
-    .skill-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    .skill-name { font-family: var(--font-accent); font-size: 0.8rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.5rem; }
+    /* Custom Scrollbar for back card */
+    .skill-card-back::-webkit-scrollbar { width: 4px; }
+    .skill-card-back::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.5); border-radius: 4px; }
+    
+    .skill-icon { font-size: 2.5rem; margin-bottom: 1rem; color: var(--gold); }
+    .skill-name { font-family: var(--font-accent); font-size: 1.1rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.5rem; }
     .skill-bar-wrap {
-      height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;
+      height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; width: 80%; margin: 0 auto;
     }
     .skill-bar {
       height: 100%; border-radius: 2px;
       background: linear-gradient(90deg, var(--saffron), var(--gold));
       width: 0; transition: width 1.5s ease;
     }
-    .skill-card.visible .skill-bar { width: var(--w); }
+    .skill-card-container.visible .skill-bar { width: var(--w); }
+    
+    .skill-back-title { color: var(--gold); font-size: 0.9rem; font-family: var(--font-accent); letter-spacing: 0.05em; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 3px; margin-top: 5px; margin-bottom: 2px;}
+    .skill-back-text { color: rgba(245,240,232,0.8); font-size: 0.75rem; line-height: 1.4; margin-bottom: 0.2rem;}
+    .skill-back-text strong { color: var(--saffron); }
 
     /* ====================== PROJECTS ====================== */
     #projects { padding: 7rem 0; }
@@ -1917,26 +1955,74 @@ if (heroCard) {
 
 // ====================== SKILLS DATA & RENDER ======================
 const skills = [
-  { icon: '🐍', name: 'Python', w: 95 },
-  { icon: '🤖', name: 'Machine Learning', w: 90 },
-  { icon: '🧠', name: 'Deep Learning', w: 88 },
-  { icon: '👁️', name: 'Computer Vision', w: 92 },
-  { icon: '💬', name: 'NLP / LLMs', w: 85 },
-  { icon: '🔥', name: 'TensorFlow', w: 82 },
-  { icon: '⚡', name: 'PyTorch', w: 80 },
-  { icon: '☁️', name: 'Azure AI', w: 78 },
-  { icon: '🗺️', name: 'GIS Mapping', w: 75 },
-  { icon: '📊', name: 'Data Science', w: 88 },
-  { icon: '🌐', name: 'FastAPI / Flask', w: 72 },
-  { icon: '🐳', name: 'Docker', w: 65 },
+  { icon: '<i class="fab fa-python"></i>', name: 'Python', w: 95, 
+    how: 'Mastered through rigorous academic curriculum and extensive self-study.',
+    demo: 'Developed numerous open-source libraries and enterprise backend services.',
+    used: 'Core language across all AI projects, APIs, and automation scripts.' },
+  { icon: '<i class="fas fa-robot"></i>', name: 'Machine Learning', w: 90,
+    how: 'Learned via deep research, practical implementations, and industry certifications.',
+    demo: 'Built models for predictive analysis, achieving high accuracy in Kaggle competitions.',
+    used: 'FlowMind-AI, SimpleMLTools, and various data-driven automation pipelines.' },
+  { icon: '<i class="fas fa-brain"></i>', name: 'Deep Learning', w: 88,
+    how: 'Acquired through specialized university coursework and independent project building.',
+    demo: 'Implemented complex neural network architectures from scratch using PyTorch.',
+    used: 'DeepLabV3 Segmentation, facial recognition systems, and advanced AI systems.' },
+  { icon: '<i class="fas fa-eye"></i>', name: 'Computer Vision', w: 92,
+    how: 'Developed by studying cutting-edge research papers on spatial computing.',
+    demo: 'Created real-time tracking systems and gesture-based control interfaces.',
+    used: 'Construction Safety AI, PoseTrack RT, and Gesture Filter Control.' },
+  { icon: '<i class="fas fa-comment-dots"></i>', name: 'NLP / LLMs', w: 85,
+    how: 'Explored through building intelligent conversational agents and fine-tuning models.',
+    demo: 'Integrated Vedic philosophy into AI using RAG and specialized prompting.',
+    used: 'Pandit LLM Gen AI, Digital Guru Chatbot, and automated text summarization.' },
+  { icon: '<i class="fas fa-fire"></i>', name: 'TensorFlow', w: 82,
+    how: 'Self-taught via official Google courses and extensive hands-on practice.',
+    demo: 'Trained and deployed production-ready models on edge devices.',
+    used: 'Image classification, anomaly detection, and deep learning backends.' },
+  { icon: '<i class="fas fa-bolt"></i>', name: 'PyTorch', w: 80,
+    how: 'Adopted for its dynamic computational graphs during deep research.',
+    demo: 'Developed custom loss functions and complex model architectures.',
+    used: 'Pandit LLM training, experimental AI projects, and advanced research.' },
+  { icon: '<i class="fab fa-microsoft"></i>', name: 'Azure AI', w: 78,
+    how: 'Certified through the Microsoft Learn Student Ambassador program.',
+    demo: 'Deployed scalable cloud-based AI endpoints and cognitive services.',
+    used: 'Cloud inference layers, scalable ML model hosting, and enterprise integrations.' },
+  { icon: '<i class="fas fa-map-marked-alt"></i>', name: 'GIS Mapping', w: 75,
+    how: 'Learned during specialized geo-spatial data analysis projects.',
+    demo: 'Mapped environmental variables and visualized complex geographical datasets.',
+    used: 'GIS Mapping Project and urban planning data visualizations.' },
+  { icon: '<i class="fas fa-chart-bar"></i>', name: 'Data Science', w: 88,
+    how: 'Honed through a rigorous Honours degree curriculum at SPPU.',
+    demo: 'Cleaned, analyzed, and visualized massive datasets for actionable insights.',
+    used: 'Statistical modeling, data preprocessing pipelines, and business intelligence.' },
+  { icon: '<i class="fas fa-server"></i>', name: 'FastAPI / Flask', w: 72,
+    how: 'Mastered by building high-performance backend APIs for AI models.',
+    demo: 'Created robust REST APIs supporting thousands of concurrent requests.',
+    used: 'Serving ML models, creating backend proxies, and FlowMind APIs.' },
+  { icon: '<i class="fab fa-docker"></i>', name: 'Docker', w: 65,
+    how: 'Learned to solve the "it works on my machine" problem for AI deployments.',
+    demo: 'Containerized complex ML environments with GPU dependencies.',
+    used: 'Deploying AI services consistently across dev, staging, and production.' },
 ];
 const skillsGrid = document.getElementById('skillsGrid');
 skills.forEach(s => {
   skillsGrid.innerHTML += `
-    <div class="skill-card reveal" style="--w:${s.w}%">
-      <div class="skill-icon">${s.icon}</div>
-      <div class="skill-name">${s.name}</div>
-      <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+    <div class="skill-card-container reveal" style="--w:${s.w}%">
+      <div class="skill-card">
+        <div class="skill-card-front">
+          <div class="skill-icon">${s.icon}</div>
+          <div class="skill-name">${s.name}</div>
+          <div class="skill-bar-wrap"><div class="skill-bar"></div></div>
+        </div>
+        <div class="skill-card-back">
+          <div class="skill-back-title">How I got it</div>
+          <div class="skill-back-text">${s.how}</div>
+          <div class="skill-back-title">Demonstration</div>
+          <div class="skill-back-text">${s.demo}</div>
+          <div class="skill-back-title">Where I used it</div>
+          <div class="skill-back-text">${s.used}</div>
+        </div>
+      </div>
     </div>`;
 });
 
@@ -2103,12 +2189,12 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .skill-card').forEach(el => {
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .skill-card-container').forEach(el => {
   observer.observe(el);
 });
 
 // Stagger reveal delays
-document.querySelectorAll('.skill-card').forEach((el, i) => {
+document.querySelectorAll('.skill-card-container').forEach((el, i) => {
   el.style.transitionDelay = `${i * 0.06}s`;
 });
 document.querySelectorAll('.project-card').forEach((el, i) => {
