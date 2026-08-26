@@ -2353,14 +2353,30 @@ async function sendToGuru(userText) {
           const delta = json.choices?.[0]?.delta;
           if (!delta) continue;
 
-          // Handle reasoning/thinking tokens
+          // Handle reasoning/thinking tokens natively if model supports it
           if (delta.reasoning_content) {
             fullReasoning += delta.reasoning_content;
           }
-          // Handle actual response tokens
+          
+          // Handle actual response tokens (including embedded <think> tags from Qwen)
           if (delta.content) {
             fullResponse += delta.content;
-            streamEl.textSpan.textContent = fullResponse;
+            
+            // Calculate if we are currently inside an unclosed <think> tag
+            const openThinks = (fullResponse.match(/<think>/g) || []).length;
+            const closeThinks = (fullResponse.match(/<\/think>/g) || []).length;
+            const isThinking = openThinks > closeThinks;
+            
+            // Strip the <think> blocks for the live text display
+            let displayResponse = fullResponse.replace(/<think>[\s\S]*?(<\/think>|$)/g, '').trim();
+            
+            // Safely format the text
+            let formattedResponse = displayResponse.replace(/</g, '&lt;').replace(/\n/g, '<br>');
+            
+            // Show a nice indicator while thinking
+            let thinkingUI = isThinking ? `<div style="font-size: 0.85em; opacity: 0.8; color: var(--gold); margin-bottom: 8px; font-style: italic; animation: pulse 1.5s infinite;">🤔 Seeking ancient wisdom...</div>` : '';
+            
+            streamEl.textSpan.innerHTML = thinkingUI + formattedResponse;
             scrollGuruToBottom();
           }
         } catch (parseErr) { /* ignore malformed chunks */ }
@@ -2369,9 +2385,9 @@ async function sendToGuru(userText) {
 
     // Finalize the streaming bubble
     streamEl.finalize(fullResponse || '(No response received)');
-    conversationHistory.push({ role: 'assistant', content: fullResponse });
+    conversationHistory.push({ role: 'assistant', content: fullResponse.replace(/<think>[\s\S]*?<\/think>/g, '').trim() });
 
-    // If there was reasoning, prepend it as a collapsible
+    // If there was native reasoning, prepend it as a collapsible
     if (fullReasoning.trim()) {
       const lastMsg = guruMessages.lastElementChild;
       const thinkDiv = document.createElement('div');
