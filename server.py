@@ -39,8 +39,10 @@ RATE_LIMIT_RPM  = 12       # max requests per minute per IP
 # Initialize Groq client safely
 try:
     client = Groq(api_key=API_KEY)
-except Exception:
+    init_error = None
+except Exception as e:
     client = None
+    init_error = str(e)
 
 # ─────────────────────── RATE LIMITER ─────────────────────
 _rate_store: dict = defaultdict(list)
@@ -598,7 +600,8 @@ def chat_proxy():
     except Exception as e:
         # ── Fallback Demo Response ──
         print(f"API Error falling back: {e}")
-        fallback_msg = f"Namaste! 🙏 The API connection is currently resting. (Debug: {str(e)}). But I am Gaurav Pandit's Digital Guru! Gaurav is an AI Engineer and Researcher building autonomous systems like FlowMind and Pandit LLM, guided by Vedic wisdom. Feel free to reach out to him directly via the contact form above!"
+        debug_info = f"Init: {init_error}, Exec: {str(e)}" if init_error else str(e)
+        fallback_msg = f"Namaste! 🙏 The API connection is currently resting. (Debug: {debug_info}). But I am Gaurav Pandit's Digital Guru! Gaurav is an AI Engineer and Researcher building autonomous systems like FlowMind and Pandit LLM, guided by Vedic wisdom. Feel free to reach out to him directly via the contact form above!"
         if stream:
             def fallback_stream():
                 chunk = {
