@@ -1661,10 +1661,7 @@
                 <div class="guru-name">Digital Guru</div>
                 <div class="guru-status"><span class="status-dot"></span> Powered by NVIDIA</div>
               </div>
-              <select id="guruMode" class="guru-mode-select">
-                <option value="about_me">About Me</option>
-                <option value="about_projects">About Projects</option>
-              </select>
+
             </div>
             <div class="guru-messages" id="guruMessages">
               <div class="guru-msg bot-msg">
@@ -2430,8 +2427,6 @@ async function sendToGuru(userText) {
   const streamEl = addStreamingBotBubble();
 
   try {
-    const currentMode = document.getElementById('guruMode').value;
-
     const response = await fetch(NVIDIA_BASE_URL, {
       method: 'POST',
       headers: {
@@ -2439,7 +2434,7 @@ async function sendToGuru(userText) {
         // API key is handled by the proxy server (server.py)
       },
       body: JSON.stringify({
-        mode: currentMode,
+        mode: "unified",
         messages: conversationHistory,
         stream: true
       })
